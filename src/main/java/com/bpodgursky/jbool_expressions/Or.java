@@ -31,7 +31,7 @@ public class Or<K> extends NExpression<K> {
 
   public String toString() {
     if (cachedStringRepresentation == null) {
-      cachedStringRepresentation = Arrays.stream(expressions).map(Object::toString).collect(Collectors.joining(" | ", "(", ")"));
+      cachedStringRepresentation = Arrays.stream(expressions).map(Object::toString).collect(Collectors.joining(" || ", "(", ")"));
     }
     return cachedStringRepresentation;
   }

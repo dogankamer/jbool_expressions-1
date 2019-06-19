@@ -9,20 +9,20 @@ import com.bpodgursky.jbool_expressions.Or;
 import com.bpodgursky.jbool_expressions.cache.RuleSetCache;
 import com.bpodgursky.jbool_expressions.options.ExprOptions;
 
-//  A | (!A & C) | D => A | C | D
-//  A & (!A | C) & D => A & C & D
+//  A || (!A && C) || D => A || C || D
+//  A && (!A || C) && D => A && C && D
 public class CollapseNegation<K> extends Rule<NExpression<K>, K> {
 
   public Expression<K> applyInternal(NExpression<K> input, ExprOptions<K> options) {
 
     //  case 1:
-    //  A | (!A & C) | D
+    //  A || (!A && C) || D
     if (input instanceof Or) {
       Or<K> inOr = (Or<K>)input;
 
       for (Expression<K> expression : input.getChildren()) {
 
-        //  (!A & C)
+        //  (!A && C)
         if (expression instanceof And) {
           And<K> child = (And<K>)expression;
 

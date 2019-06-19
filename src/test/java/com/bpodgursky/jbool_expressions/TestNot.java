@@ -22,19 +22,19 @@ public class TestNot extends JBoolTestCase {
   }
 
   public void testNot3(){
-    assertSimplify("!E", "(! ( E & E))");
+    assertSimplify("!E", "(! ( E && E))");
   }
 
   public void testDeMorgan(){
 
-    Expression<String> after1 = ExprParser.parse("( (! A) & (! B))");
-    Expression<String> expr1 = ExprParser.parse("(! ( A | B))");
+    Expression<String> after1 = ExprParser.parse("( (! A) && (! B))");
+    Expression<String> expr1 = ExprParser.parse("(! ( A || B))");
 
     assertEquals(after1.toString(),
         RulesHelper.applySet(expr1, Arrays.asList(new DeMorgan<>()), ExprOptions.noCaching()).toString());
 
-    Expression<String> expr2 = ExprParser.parse("(! ( A&  B))");
-    Expression<String> after2 = ExprParser.parse("( (! A)|  (! B))");
+    Expression<String> expr2 = ExprParser.parse("(! (  A&&   B))");
+    Expression<String> after2 = ExprParser.parse("( (! A)|| (! B))");
 
     assertEquals(after2.toString(),
         RulesHelper.applySet(expr2, Arrays.asList(new DeMorgan<>()), ExprOptions.noCaching()).toString());

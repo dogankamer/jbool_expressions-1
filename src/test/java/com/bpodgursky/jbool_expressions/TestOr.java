@@ -6,25 +6,25 @@ import static org.junit.Assert.assertNotEquals;
 public class TestOr extends JBoolTestCase {
 
   public void testSimplify(){
-    assertSimplify("A", "( A| A)");
-    assertSimplify("A", "( A|  A | A)");
-    assertSimplify("true", "( A| A | (! A))");
-    assertSimplify("true", "( A|  A |true)");
-    assertSimplify("A", "( A|  A | false)");
+    assertSimplify("A", "( A|| A)");
+    assertSimplify("A", "( A||  A || A)");
+    assertSimplify("true", "( A|| A || (! A))");
+    assertSimplify("true", "( A||  A ||true)");
+    assertSimplify("A", "( A||  A || false)");
 
   }
 
   public void testAndTrue(){
-    assertSimplify("true", "( true | (! (! true)))");
-    assertSimplify("true", "( true  | (! (! false)))");
+    assertSimplify("true", "( true || (! (! true)))");
+    assertSimplify("true", "( true  || (! (! false)))");
   }
 
   public void testTwoVar(){
-    assertSimplify("(A | B)", "( A | B | A)");
+    assertSimplify("(A || B)", "( A || B || A)");
   }
 
   public void testNExpr(){
-    assertSimplify("true", "( A | B | A | ( true & (! (! true))))");
+    assertSimplify("true", "( A || B || A || ( true && (! (! true))))");
   }
 
 
@@ -39,6 +39,6 @@ public class TestOr extends JBoolTestCase {
 
 
   public void testConstructionViaArray() {
-    assertEquals("(A | B | C | D | E)", Or.of(Variable.of("A"), Variable.of("B"), Variable.of("C"), Variable.of("D"), Variable.of("E")).toString());
+    assertEquals("(A || B || C || D || E)", Or.of(Variable.of("A"), Variable.of("B"), Variable.of("C"), Variable.of("D"), Variable.of("E")).toString());
   }
 }

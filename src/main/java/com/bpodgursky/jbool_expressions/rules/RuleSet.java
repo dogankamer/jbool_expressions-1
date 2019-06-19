@@ -38,7 +38,7 @@ public class RuleSet {
    * This method transforms an expression to DNF, but at a variable cardinality less than 9, switches to the QuineMcCluskey algorithm.
    * <p>
    * The problem with using the switch globally is that QMC can be considerably slower than "naiive" simplification on really simple expressions.
-   * For example, (A | B | C | D | E | F | G) takes 15ms using the standard toSop rules, but 120ms using QMC.  But QMC is dramatically faster
+   * For example, (A || B || C || D || E || F || G) takes 15ms using the standard toSop rules, but 120ms using QMC.  But QMC is dramatically faster
    * on some larger expressions with the same number of variables -- see https://github.com/bpodgursky/jbool_expressions/issues/29 for an example.
    * <p>
    * So for now, I'm going to add a new method instead of potentially introducing a performance regression on the old method.  If there's a smarter

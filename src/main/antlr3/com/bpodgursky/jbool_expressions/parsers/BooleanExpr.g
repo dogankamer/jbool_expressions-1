@@ -16,8 +16,8 @@ package com.bpodgursky.jbool_expressions.parsers;
 
 LPAREN : '(';
 RPAREN : ')';
-AND : '&';
-OR : '|';
+AND : '&&';
+OR : '||';
 NOT : '!';
 TRUE : 'true';
 FALSE : 'false';

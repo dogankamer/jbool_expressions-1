@@ -18,7 +18,7 @@ A basic propositional expression is built out of the types `And`, `Or`, `Not`, `
 We see the expression is what we expect:
 
 ```bash
-((!C | C) & A & B)
+((!C || C) && A && B)
 ```
 
 ### Simplification ###
@@ -31,7 +31,7 @@ Of course, this expression contains a useless term (either C or (! C) is always 
 ```
 outputs:
 ```bash
-(A & B)
+(A && B)
 ```
 
 ### Variable Assignment ###
@@ -65,7 +65,7 @@ All expressions are immutable (we got a new expression back each time we perform
 ```
 outputs:
 ```bash
-((!C | C) & A & B)
+((!C || C) && A && B)
 ```
 
 ### Input String Parsing ###
@@ -73,13 +73,13 @@ outputs:
 Alternatively, we could have provided our expression as a String in prefix notation and parsed it.  We can verify that this expression is identical to the one we built manually:
 
 ```java
-    Expression<String> parsedExpression = RuleSet.simplify(ExprParser.parse("( ( (! C) | C) & A & B)"));
+    Expression<String> parsedExpression = RuleSet.simplify(ExprParser.parse("( ( (! C) || C) && A && B)"));
     System.out.println(parsedExpression);
     System.out.println(parsedExpression.equals(simplified));
 ```
 output:
 ```bash
-(A & B)
+(A && B)
 true
 ```
 
@@ -88,7 +88,7 @@ true
 We can also convert expressions to sum-of-products form instead of just simplifying them.  For example:
 
 ```java
-    Expression<String> nonStandard = ExprParser.parse("((A | B) & (C | D))");
+    Expression<String> nonStandard = ExprParser.parse("((A || B) && (C || D))");
     System.out.println(nonStandard);
 
     Expression<String> sopForm = RuleSet.toDNF(nonStandard);
@@ -96,8 +96,8 @@ We can also convert expressions to sum-of-products form instead of just simplify
 ```
 output:
 ```bash
-((A | B) & (C | D))
-((A & C) | (A & D) | (B & C) | (B & D))
+((A || B) && (C || D))
+((A && C) || (A && D) || (B && C) || (B && D))
 ```
 
 ### Converting to Conjunctive Normal (Product-of-Sums) form ###
@@ -105,7 +105,7 @@ output:
 Likewise, we can convert an expression to product-of-sums form.  For example:
 
 ```java
-    Expression<String> nonStandard = ExprParser.parse("((A & B) | (C & D))");
+    Expression<String> nonStandard = ExprParser.parse("((A && B) || (C && D))");
     System.out.println(nonStandard);
 
     Expression<String> posForm = RuleSet.toCNF(nonStandard);
@@ -114,8 +114,8 @@ Likewise, we can convert an expression to product-of-sums form.  For example:
 ```
 output:
 ```bash
-((A & B) | (C & D))
-((A | C) & (A | D) & (B | C) & (B | D))
+((A && B) || (C && D))
+((A || C) && (A || D) && (B || C) && (B || D))
 ```
 
 
@@ -130,33 +130,33 @@ I'm happy to add more sophisticated rules (let me know about them via a PR or is
 Literal removal:
 
 ```bash
-(false & A) => false
-(true & A) => A
+(false && A) => false
+(true && A) => A
 
-(false | A) => A
-(true | A) => true
+(false || A) => A
+(true || A) => true
 ```
 
 Negation simplification:
 
 ```bash
 (!!A ) => A
-(A & !A) => false
-(A | !A) => true
+(A && !A) => false
+(A || !A) => true
 ```
 
 And / Or de-duplication and flattening:
 
 ```bash
-(A & A & (B & C)) => (A & B & C)
-(A | A | (B | C)) => (A | B | C)
+(A && A && (B && C)) => (A && B && C)
+(A || A || (B || C)) => (A || B || C)
 ```
 
 Child expression simplification:
 
 ```bash
-(A | B) & (A | B | C) => (A | B)
-((A & B) | (A & B & C)) => (A & B)
+(A || B) && (A || B || C) => (A || B)
+((A && B) || (A && B && C)) => (A && B)
 ```
 
 Additional rules for converting to sum-of-products form:
@@ -164,13 +164,13 @@ Additional rules for converting to sum-of-products form:
 Propagating &:
 
 ```bash
-( A & ( C | D)) => ((A & C) | (A & D))
+( A && ( C || D)) => ((A && C) || (A && D))
 ```
 
 De Morgan's law:
 
 ```bash
-(! ( A | B)) => ( (! A) & (! B))
+(! ( A || B)) => ( (! A) && (! B))
 ```
 
 Downloading

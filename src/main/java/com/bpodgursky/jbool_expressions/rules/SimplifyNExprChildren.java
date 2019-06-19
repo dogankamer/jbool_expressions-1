@@ -11,7 +11,7 @@ import com.bpodgursky.jbool_expressions.util.ExprFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-//  a | (a & b) = a, and the like
+//  a || (a && b) = a, and the like
 public class SimplifyNExprChildren<K> extends Rule<NExpression<K>, K> {
 
   @Override
@@ -72,19 +72,19 @@ public class SimplifyNExprChildren<K> extends Rule<NExpression<K>, K> {
       return true;
     }
 
-    //  (a | b) & (a | b | c)
+    //  (a || b) && (a || b || c)
     if (expr instanceof Or && exprCheckSubset instanceof Or && parent instanceof And) {
       return checkContainsAllChildren((Or)expr, (Or)exprCheckSubset);
     }
 
-    //  (a & b) | (a & b & c)
+    //  (a && b) || (a && b && c)
     else if (expr instanceof And && exprCheckSubset instanceof And && parent instanceof Or) {
       return checkContainsAllChildren((And)expr, (And)exprCheckSubset);
     }
 
-    //  a | (a & b & c)
-    //  a & (a | b | c)
-    //  !a & (!a | b | c)
+    //  a || (a && b && c)
+    //  a && (a || b || c)
+    //  !a && (!a || b || c)
     else if (expr instanceof And && parent instanceof Or || expr instanceof Or && parent instanceof And) {
       return checkContains((NExpression)expr, exprCheckSubset);
     }

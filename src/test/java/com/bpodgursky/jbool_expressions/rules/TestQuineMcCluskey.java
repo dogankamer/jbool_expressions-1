@@ -18,7 +18,7 @@ public class TestQuineMcCluskey extends JBoolTestCase {
 
   public void testFindMinterms() {
 
-    Expression<String> expr = expr("(A & B) | C");
+    Expression<String> expr = expr("(A && B) || C");
 
     ArrayList<String> vars = new ArrayList<>(expr.getAllK());
     Collections.sort(vars);
@@ -67,15 +67,15 @@ public class TestQuineMcCluskey extends JBoolTestCase {
 
     assertTrue(
         Arrays.asList(
-            expr("(!A & !B)"),
-            expr("(B & !C)"),
-            expr("(A & C)")
+            expr("(!A && !B)"),
+            expr("(B && !C)"),
+            expr("(A && C)")
         ).equals(expr) ||
 
             Arrays.asList(
-                expr("(!A & !C)"),
-                expr("(!B & C)"),
-                expr("A & B")
+                expr("(!A && !C)"),
+                expr("(!B && C)"),
+                expr("A && B")
             ).equals(expr)
 
     );
@@ -85,21 +85,21 @@ public class TestQuineMcCluskey extends JBoolTestCase {
   //  example from https://en.wikipedia.org/wiki/Petrick%27s_method
   public void testAll() {
 
-    Expression<String> expr = expr("(!A & !B) | (!A & !C) | (!B & C) | (B & !C) | (A & C) | (A & B)");
+    Expression<String> expr = expr("(!A && !B) || (!A && !C) || (!B && C) || (B && !C) || (A && C) || (A && B)");
 
     Expression<String> simplified = QuineMcCluskey.toDNF(expr, ExprOptions.noCaching());
 
     assertTrue(
         Or.of(Arrays.asList(
-            expr("(!A & !B)"),
-            expr("(B & !C)"),
-            expr("(A & C)")
+            expr("(!A && !B)"),
+            expr("(B && !C)"),
+            expr("(A && C)")
         )).equals(simplified) ||
 
             Or.of(Arrays.asList(
-                expr("(!A & !C)"),
-                expr("(!B & C)"),
-                expr("(A & B)")
+                expr("(!A && !C)"),
+                expr("(!B && C)"),
+                expr("(A && B)")
             )).equals(simplified)
 
     );

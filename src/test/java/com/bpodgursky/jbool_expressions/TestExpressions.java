@@ -22,7 +22,7 @@ public class TestExpressions extends JBoolTestCase {
         Variable.of("F")
     );
 
-    assertEquals("(F & !(A | true) & (C | D | false))", expr.toString());
+    assertEquals("(F && !(A || true) && (C || D || false))", expr.toString());
 
     Set<String> allVars = new HashSet<String>(Arrays.asList("A", "C", "D", "F"));
     assertEquals(allVars, ExprUtil.getVariables(expr));
@@ -88,13 +88,13 @@ public class TestExpressions extends JBoolTestCase {
 
   public void testReplacement(){
 
-    Expression<String> expr = expr("(F & !D & (C | !A ))");
+    Expression<String> expr = expr("(F && !D && (C || !A ))");
 
     assertEquals(new HashSet<>(Arrays.asList("A", "C", "D", "F")), expr.getAllK());
 
     assertEquals(
-        "(F & !D & (C | !(B & C)))",
-        expr.replaceVars(Collections.singletonMap("A", expr("(B & C)")), new ExprFactory.Default<>()).toString()
+        "(F && !D && (C || !(B && C)))",
+        expr.replaceVars(Collections.singletonMap("A", expr("(B && C)")), new ExprFactory.Default<>()).toString()
     );
 
   }
@@ -110,20 +110,20 @@ public class TestExpressions extends JBoolTestCase {
   }
 
   public void testParse() throws Exception {
-    assertSimplify("aBC_D9", "aBC_D9 & (aBC_D9 | BCD)");
-    assertSimplify("'not even valid'", "'not even valid' & ('not even valid' | BCD)");
+    assertSimplify("aBC_D9", "aBC_D9 && (aBC_D9 || BCD)");
+    assertSimplify("'not even valid'", "'not even valid' && ('not even valid' || BCD)");
   }
 
   public void testLongExpression() {
-      String exp = "(122036 | 122037 | 122039 | 122040 | 122042 | 122043 | 122045 | 122046 | 122048 | 122049 | " +
-              "122051 | 122052 | 122054 | 122055 | 122057 | 122058 | 122060 | 122061 | 122063 | 122064 | 122066 | " +
-              "122067 | 122069 | 122070 | 169225 | 169226 | 169228 | 169229 | 169231 | 169232 | 169234 | 169235 | " +
-              "169237 | 169238 | 169240 | 169241 | 169243 | 169244 | 169246 | 169247 | 169249 | 169250 | 169252 | " +
-              "169253 | 169255 | 169256 | 169258 | 169259 | 169261 | 169262 | 169264 | 169265 | 106925 | 106926 | " +
+      String exp = "(122036 || 122037 || 122039 || 122040 || 122042 || 122043 || 122045 || 122046 || 122048 || 122049 || " +
+              "122051 || 122052 || 122054 || 122055 || 122057 || 122058 || 122060 || 122061 || 122063 || 122064 || 122066 || " +
+              "122067 || 122069 || 122070 || 169225 || 169226 || 169228 || 169229 || 169231 || 169232 || 169234 || 169235 || " +
+              "169237 || 169238 || 169240 || 169241 || 169243 || 169244 || 169246 || 169247 || 169249 || 169250 || 169252 || " +
+              "169253 || 169255 || 169256 || 169258 || 169259 || 169261 || 169262 || 169264 || 169265 || 106925 || 106926 || " +
               "165611)";
       ExprParser.parse(exp);
-      ExprParser.parse(exp.replaceAll("\\|","&"));
-      ExprParser.parse(exp.replaceAll("\\|","& !"));
+      ExprParser.parse(exp.replaceAll("\\|\\|","&&"));
+      ExprParser.parse(exp.replaceAll("\\|\\|","&& !"));
   }
 
 }
